@@ -1,17 +1,12 @@
 package com.GroceryStore.Products;
 
 public class Generic extends Product {
-    private Integer intMeta;
-    private String intMetaDesc;
-    private String strMeta;
-    private Object objMeta;
-
+    Integer intMeta = null;
+    String intMetaDesc = null;
+    String strMeta = null;
+    Object objMeta = null;
 
     public Generic(String name, int price, String id, String description) {
         super(name, price, id, description);
-        this.intMeta = null;
-        this.intMetaDesc = null;
-        this.strMeta = null;
-        this.objMeta = null;
     }
 }

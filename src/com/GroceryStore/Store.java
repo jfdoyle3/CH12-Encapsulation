@@ -26,31 +26,23 @@ public class Store {
         inventory.add(product);
     }
 
-    public void addToInventory(String name, int price, String id, String description, int volume, String volumeUnit) {
-        Drink drink = new Drink(name, price, id, description, volume, volumeUnit);
+    public void addToInventory(String name, int price, String id, String description, int volume, int vu) {
+        Drink drink = new Drink(name, price, id, description, volume, vu);
         addToInventory(drink);
-    }
-
-
-    public void addToInventory(String name, int price, String id, String description, int volume, int volumeUnit) {
-        Drink drink = new Drink(name, price, id, description, volume, volumeUnit);
-        addToInventory(drink);
-    }
-
-
-    public void addToInventory(String name, int price, String id, String description, int hardness, boolean isOrganic) {
-        Fruit fruit = new Fruit(name, price, id, description, hardness, isOrganic);
-        addToInventory(fruit);
-    }
-
+    };
 
     public void addToInventory(String name, int price, String id, String description, int hardness) {
         Fruit fruit = new Fruit(name, price, id, description, hardness);
         addToInventory(fruit);
-    }
+    };
 
     public void throwAway(Product product) {
         inventory.remove(product);
+    }
+
+    public void purchase(Product product) {
+        balance += product.getPrice();
+        throwAway(product);
     }
 
     public String getInventory() {
@@ -64,5 +56,14 @@ public class Store {
     public String getBalance() {return Formatter.getDisplayPrice(balance);}
 
     public String getName() {return name;}
+
+    public Product getProduct (String id) {
+        for (Product product : inventory) {
+            if (product.id.equals(id)) {
+                return product;
+            }
+        }
+        return null;
+    }
 
 }
