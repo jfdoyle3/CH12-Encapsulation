@@ -6,40 +6,71 @@ import java.util.Scanner;
 
 public class UI {
     private static Scanner scanner = new Scanner(System.in);
+    private final static String[] MENU=new String[]{
+            "1. add product to inventory",
+            "2. throw away a product",
+            "3. list products available",
+            "4. sell a product",
+            "5. quit"
+    };
+
+    private final static String[] PRODUCT_TYPES=new String[]{
+            "1. Drink",
+            "2. Fruit"
+    };
 
     public static void welcome(String name) {
         System.out.println("Welcome to " + name + "!");
     }
 
-    public static void optionMenu() {
-        System.out.println("What would you like to do?");
-        System.out.println("1. add product to inventory");
-        System.out.println("2. throw away a product");
-        System.out.println("3. list products available");
-        System.out.println("4. sell a product");
-        System.out.println("5. quit");
+    public static void displayOptions(String prompt, String[] options) {
+        System.out.println(prompt);
+        for(String option : options)
+            System.out.println(option);
     }
 
     public static void start(Store store) {
         welcome(store.getName());
-        optionMenu();
-        int choice = getInt(1, 5, "Enter selection between 1 and 5:");
+        displayOptions("What would you like to do?",MENU);
+        int choice = getInt(1, PRODUCT_TYPES.length, "Enter selection between 1 and 5:");
     }
 
     public static int getInt(int min, int max, String prompt) {
-        int option = 0;
-        try {
+        int option;
         do {
-           
+            try {
                 System.out.println(prompt);
                 String input = scanner.next();
-                // TODO: catch the below in case of error and prevent application from crashing
                 option = Integer.parseInt(input);
-
-        } while (option < min || option > max); 
-        }catch(Exception e){
-        System.out.println("error not a number");
-    }  
+            } catch (NumberFormatException e) {
+                System.out.println(e);
+                option = max + 1;
+            }
+        } while (option < min || option > max);
         return option;
+    }
+
+    public static void handleMenuSelection(int choice) {
+        switch (choice) {
+            case 1:
+                addProduct();
+                break;
+            case 2:
+                throwAwayProduct();
+                break;
+            case 3:
+                displayProducts();
+                break;
+            case 4:
+                sellProducts();
+            case 5:
+                System.exit(0);
+            default:
+                System.out.println("invalid number");
+        }
+    }
+
+    private static void addProduct() {
+        displayOptions("What kind of Product?",PRODUCT_TYPES);
     }
 }
