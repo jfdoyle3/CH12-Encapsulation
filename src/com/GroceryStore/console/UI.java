@@ -1,12 +1,14 @@
 package com.GroceryStore.console;
 
 import com.GroceryStore.Products.Drink;
+import com.GroceryStore.Products.Fruit;
 import com.GroceryStore.Products.Product;
 import com.GroceryStore.Store;
 
+import java.util.Locale;
 import java.util.Scanner;
 
-//TODO make the ui system loop until it exits
+//TODO COMPLETED: make the ui system loop until it exits
 
 public class UI {
     private Store store;
@@ -37,9 +39,11 @@ public class UI {
     public void start(Store store) {
         this.store = store;
         welcome(store.getName());
-        displayOptions("What do you want to do?", MENU);
-        int choice = getInt(1, 5, "Enter selection between 1 and 5:");
-        handleMenuSelection(choice);
+        while(true) {
+            displayOptions("What do you want to do?", MENU);
+            int choice = getInt(1, 5, "Enter selection between 1 and 5:");
+            handleMenuSelection(choice);
+        }
     }
 
     public static int getInt(int min, int max, String prompt) {
@@ -49,11 +53,15 @@ public class UI {
             String input = scanner.nextLine();
             try{
                 option = Integer.parseInt(input);
+            // Catches the specific Exception error that parseInt has.
             } catch (NumberFormatException err) {
                 System.out.println("Invalid number");
+            // You can stack/overload catches with other specific exceptions or
+            // use the general Exception
             } catch (Exception err) {
                 System.out.println("general exception");
             }
+            // Finally code run regardless on the outcome of the try/catch
 //            finally {
 //                System.out.println("HI there");
 //            }
@@ -77,6 +85,13 @@ public class UI {
 
         return input;
     }
+    public static boolean getBoolean(String prompt){
+        System.out.println(prompt);
+        String choice=scanner.nextLine();
+        if (choice.toUpperCase().equals("Y") || choice.toUpperCase().equals("YES"))
+            return true;
+        return false;
+    }
 
     public void handleMenuSelection(int choice) {
         switch (choice) {
@@ -95,8 +110,8 @@ public class UI {
         Product newProduct;
         switch (choice) {
             case 1 -> newProduct = getDrinkDetails();
-            // TODO: implement the following method use getDrinkDetails as reference
-//            case 2 -> newProduct = getFruitDetails();
+            // TODO COMPLETED: implement the following method use getDrinkDetails as reference
+            case 2 -> newProduct = getFruitDetails();
             default -> {
                 System.out.println("error bad type");
                 newProduct = null;
@@ -114,6 +129,17 @@ public class UI {
                 getString("Description: ", false),
                 getInt(1, Integer.MAX_VALUE, "Volume"),
                 getInt( 0, Drink.UNITS.length - 1, "Volume Unit")
+        );
+    }
+
+    private static Fruit getFruitDetails() {
+        return new Fruit(
+                getString("Fruit name",true),
+                getInt(1,Integer.MAX_VALUE,"Price?"),
+                getString("Id:",true),
+                getString("Description: ",false),
+                getInt(1,Integer.MAX_VALUE,"Hardness:"),
+                getBoolean("Organic?(Y/N) ")
         );
     }
 

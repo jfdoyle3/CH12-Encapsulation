@@ -10,7 +10,7 @@ public class Main {
         Store store = new Store("Cliff's store");
         UI ui = new UI();
 
-//        System.out.println(store.getBalance());
+        System.out.println(store.getBalance());
         store.addToInventory("Apple", 89, "p-001", "Red Apple", 5);
         store.addToInventory("Orange", 5_50, "p-002", "Bag of blood oranges", 4);
         store.addToInventory("Milk", 4_00 , "d-001", "Whole milk Gallon", 1, 0);
@@ -20,5 +20,7 @@ public class Main {
         ui.start(store);
         System.out.println(store.getInventory());
         System.out.println(store.getBalance());
+//        boolean resp=UI.getBoolean("Organic?");
+//        System.out.println("--->"+resp);
     }
 }
