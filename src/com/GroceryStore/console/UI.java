@@ -5,28 +5,29 @@ import com.GroceryStore.Products.Fruit;
 import com.GroceryStore.Products.Product;
 import com.GroceryStore.Store;
 
-import java.util.Locale;
 import java.util.Scanner;
-
-//TODO COMPLETED: make the ui system loop until it exits
 
 public class UI {
     private Store store;
     private static Scanner scanner = new Scanner(System.in);
-    private final static String[] MENU = new String[] {
-            "1. add product to inventory",
-            "2. throw away a product",
-            "3. list products available",
-            "4. sell a product",
-            "5. quit"
-    };
-    private final static String[] PRODUCT_TYPES = new String[] {
-            "1. Drink",
-            "2. Fruit",
-    };
+    private Language lang;
 
-    public static void welcome(String name) {
-        System.out.println("Welcome to " + name + "!");
+    public UI(Store store) {
+        this.store = store;
+        setLang();
+    }
+
+    private void setLang() {
+        int choice = getInt(1, 2, "1. English\n2. Español");
+        switch (choice) {
+            case 1 -> lang = new English();
+            case 2 -> lang = new Spanish();
+        }
+    }
+
+
+    public void welcome(String name) {
+        System.out.println(lang.WELCOME() + name + "!");
     }
 
     public static void displayOptions(String prompt, String[] options) {
@@ -36,32 +37,27 @@ public class UI {
         }
     }
 
-    public void start(Store store) {
-        this.store = store;
+    public void start() {
         welcome(store.getName());
-        while(true) {
-            displayOptions("What do you want to do?", MENU);
-            int choice = getInt(1, 5, "Enter selection between 1 and 5:");
+        while (true) {
+            displayOptions(lang.MENU_PROMPT(), lang.MENU());
+            int choice = getInt(1, lang.MENU().length, lang.SELECT_PROMPT());
             handleMenuSelection(choice);
         }
     }
 
-    public static int getInt(int min, int max, String prompt) {
+    public int getInt(int min, int max, String prompt) {
         int option = min - 1;
         do {
             System.out.println(prompt);
             String input = scanner.nextLine();
             try{
                 option = Integer.parseInt(input);
-            // Catches the specific Exception error that parseInt has.
             } catch (NumberFormatException err) {
-                System.out.println("Invalid number");
-            // You can stack/overload catches with other specific exceptions or
-            // use the general Exception
+                System.out.println(lang.ERROR_MSGS()[1]);
             } catch (Exception err) {
-                System.out.println("general exception");
+                System.out.println(lang.ERROR_MSGS()[2]);
             }
-            // Finally code run regardless on the outcome of the try/catch
 //            finally {
 //                System.out.println("HI there");
 //            }
@@ -70,27 +66,20 @@ public class UI {
         return option;
     }
 
-    public static String getString(String prompt, boolean isRequired) {
+    public String getString(String prompt, boolean isRequired) {
         String input;
 
         do {
             System.out.println(prompt);
             input = scanner.nextLine();
             if (isRequired && input.length() == 0) {
-                System.out.println("Must enter something");
+                System.out.println(lang.ERROR_MSGS()[3]);
                 continue;
             }
             break;
         } while (true);
 
         return input;
-    }
-    public static boolean getBoolean(String prompt){
-        System.out.println(prompt);
-        String choice=scanner.nextLine();
-        if (choice.toUpperCase().equals("Y") || choice.toUpperCase().equals("YES"))
-            return true;
-        return false;
     }
 
     public void handleMenuSelection(int choice) {
@@ -100,46 +89,44 @@ public class UI {
             case 3 -> displayProducts();
             case 4 -> sellProduct();
             case 5 -> System.exit(0);
-            default -> System.out.println("invalid number received");
+            case 6 -> setLang();
+            default -> System.out.println(lang.ERROR_MSGS()[1]);
         }
     }
 
     private void addProduct() {
-        displayOptions("What kind of product?", PRODUCT_TYPES);
-        int choice = getInt(1, PRODUCT_TYPES.length, "enter a number");
+        displayOptions(lang.PRODUCT_PROMPT(), lang.PRODUCT_TYPES());
+        int choice = getInt(1, lang.PRODUCT_TYPES().length, lang.SELECT_PROMPT());
         Product newProduct;
         switch (choice) {
             case 1 -> newProduct = getDrinkDetails();
-            // TODO COMPLETED: implement the following method use getDrinkDetails as reference
             case 2 -> newProduct = getFruitDetails();
             default -> {
-                System.out.println("error bad type");
+                System.out.println(lang.ERROR_MSGS()[1]);
                 newProduct = null;
             }
-
         }
         store.addToInventory(newProduct);
     }
 
-    private static Drink getDrinkDetails() {
+    private Drink getDrinkDetails() {
         return new Drink(
-                getString("Drink Name", true),
-                getInt(1, Integer.MAX_VALUE, "Price?"),
-                getString("Id: ", true),
-                getString("Description: ", false),
-                getInt(1, Integer.MAX_VALUE, "Volume"),
-                getInt( 0, Drink.UNITS.length - 1, "Volume Unit")
+                getString(lang.PRODUCT_FIELDS()[0], true),
+                getInt(1, Integer.MAX_VALUE, lang.PRODUCT_FIELDS()[1]),
+                getString(lang.PRODUCT_FIELDS()[2], true),
+                getString(lang.PRODUCT_FIELDS()[3], false),
+                getInt(1, Integer.MAX_VALUE, lang.DRINK_FIELDS()[0]),
+                getInt( 0, Drink.UNITS.length - 1, lang.DRINK_FIELDS()[1])
         );
     }
 
-    private static Fruit getFruitDetails() {
+    private Fruit getFruitDetails(){
         return new Fruit(
-                getString("Fruit name",true),
-                getInt(1,Integer.MAX_VALUE,"Price?"),
-                getString("Id:",true),
-                getString("Description: ",false),
-                getInt(1,Integer.MAX_VALUE,"Hardness:"),
-                getBoolean("Organic?(Y/N) ")
+                getString ( lang.PRODUCT_FIELDS()[0],true),
+                getInt ( Integer.MIN_VALUE,Integer.MAX_VALUE, lang.PRODUCT_FIELDS()[1] ),
+                getString ( lang.PRODUCT_FIELDS()[2], true ),
+                getString ( lang.PRODUCT_FIELDS()[3], false ),
+                getInt ( 1,Integer.MAX_VALUE, lang.FRUIT_FIELDS()[0])
         );
     }
 
@@ -155,18 +142,18 @@ public class UI {
 
 
     private void throwAwayProduct() {
-        Product prod = selectProduct("Which product id to throw away? press enter to cancel");
+        Product prod = selectProduct(lang.SELECT_PROMPT() + " " + lang.CANCEL_PROMPT());
         if (prod == null) {
-            System.out.println("404 - Product not Found");
+            System.out.println(lang.ERROR_MSGS()[4]);
             return;
         }
         store.throwAway(prod);
     }
 
     private void sellProduct() {
-        Product prod = selectProduct("Which product id to purchase? press enter to cancel");
+        Product prod = selectProduct(lang.SELECT_PROMPT() + " " + lang.CANCEL_PROMPT());
         if (prod == null) {
-            System.out.println("404 - Product not Found");
+            System.out.println(lang.ERROR_MSGS()[4]);
             return;
         }
         store.purchase(prod);
