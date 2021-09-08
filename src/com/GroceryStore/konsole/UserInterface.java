@@ -4,7 +4,9 @@ import java.util.Scanner;
 
 public interface UserInterface {
     static Scanner scanner = new Scanner(System.in);
+
     void start();
+
     static int getInt(int min, int max, String prompt, String errorMsg) {
         int option = min - 1;
         do {

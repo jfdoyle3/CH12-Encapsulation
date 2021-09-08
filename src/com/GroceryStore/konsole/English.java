@@ -25,7 +25,7 @@ public class English extends UI implements UserInterface {
         };
         WELCOME = "Welcome to ";
         PRODUCT_FIELDS = new String[] {
-                "Name:", "price:", "id:", "DescripTion:"
+                "Name:", "price:", "id:", "Description:"
         };
         DRINK_FIELDS = new String[] {
                 "Volume:", "Volume Unit Code:"
