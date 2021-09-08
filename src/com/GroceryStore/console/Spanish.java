@@ -53,7 +53,8 @@ public class Spanish implements Language {
                 "Número invalido",
                 "excepción general",
                 "Debe ingresar algo",
-                "404 - Producto no encontrado"};
+                "404 - Producto no encontrado"
+        };
     }
 
     @Override
